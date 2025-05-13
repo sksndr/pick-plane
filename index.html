@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PickPlane</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="PickPlane Logo">
+        </div>
+    </header>
+
+    <main>
+        <section class="upload-section">
+            <h2>Tap to Upload</h2>
+            <form id="upload-form" action="process_upload.php" method="post" enctype="multipart/form-data">
+                <div class="file-input-container">
+                    <label for="file-upload" class="custom-file-upload">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="upload-icon">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <span>Upload Files</span>
+                    </label>
+                    <input id="file-upload" type="file" name="files[]" multiple>
+                    <div id="file-preview-container"></div>
+                </div>
+                <p class="allowed-formats">Allowed: .pdf, .jpeg, .png, etc.</p>
+
+                <div id="options-container" style="display:none;">
+                    <div class="option">
+                        <label for="quantity">Quantity</label>
+                        <div class="input-wrapper">
+                            <button type="button" class="quantity-btn" data-action="decrease">-</button>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1">
+                            <button type="button" class="quantity-btn" data-action="increase">+</button>
+                        </div>
+                    </div>
+                    <div class="option">
+                        <label for="size">Size</label>
+                        <select id="size" name="size">
+                            <option value="A4" data-price="5">A4</option>
+                            <option value="A3" data-price="10">A3</option>
+                        </select>
+                    </div>
+                    <div class="option">
+                        <label for="color">Color</label>
+                        <select id="color" name="color">
+                            <option value="BW" data-price="0">Black & White</option>
+                            <option value="Color" data-price="2">Color</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="payment-section" style="display:none;">
+                    <div class="total-display">
+                        <span>Total:</span>
+                        <span id="total-amount">₹0.00</span>
+                    </div>
+                    <button type="button" id="payment-button">Proceed to Payment</button>
+                </div>
+
+                <button type="submit" class="print-button" disabled style="display:none;">Print Now</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <?php echo date("Y"); ?> PickPlane</p>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('file-upload');
+        const filePreviewContainer = document.getElementById('file-preview-container');
+        const optionsContainer = document.getElementById('options-container');
+        const quantityInput = document.getElementById('quantity');
+        const quantityButtons = document.querySelectorAll('.quantity-btn');
+        const sizeSelect = document.getElementById('size');
+        const colorSelect = document.getElementById('color');
+        const totalAmountSpan = document.getElementById('total-amount');
+        const paymentButton = document.getElementById('payment-button');
+        const printButton = document.querySelector('.print-button');
+        const uploadSection = document.querySelector('.upload-section');
+        const paymentSection = document.querySelector('.payment-section');
+        let files = [];
+
+        function calculateTotal() {
+            if (files.length === 0) {
+                totalAmountSpan.textContent = '₹0.00';
+                paymentButton.disabled = true;
+                printButton.disabled = true;
+                paymentSection.style.display = 'none';
+                printButton.style.display = 'none';
+                return 0;
+            }
+
+            const quantity = parseInt(quantityInput.value);
+            const sizePrice = parseFloat(sizeSelect.options[sizeSelect.selectedIndex].dataset.price);
+            const colorPrice = parseFloat(colorSelect.options[colorSelect.selectedIndex].dataset.price);
+
+            const total = quantity * (sizePrice + colorPrice) * files.length; // Price per file
+            totalAmountSpan.textContent = `₹${total.toFixed(2)}`;
+            paymentButton.disabled = false;
+            paymentSection.style.display = 'flex';
+            printButton.style.display = 'block';
+            return total;
+        }
+
+        function displayFilePreview() {
+            filePreviewContainer.innerHTML = '';
+            if (files && files.length > 0) {
+                optionsContainer.style.display = 'block';
+                for (const file of files) {
+                    const preview = document.createElement('div');
+                    preview.classList.add('file-preview');
+                    preview.textContent = file.name;
+                    filePreviewContainer.appendChild(preview);
+                }
+                calculateTotal();
+            } else {
+                optionsContainer.style.display = 'none';
+                calculateTotal();
+            }
+        }
+
+        fileInput.addEventListener('change', function() {
+            files = Array.from(this.files);
+            displayFilePreview();
+            uploadSection.classList.add('uploaded'); // Trigger animation
+        });
+
+        quantityButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.dataset.action;
+                let currentValue = parseInt(quantityInput.value);
+                if (action === 'increase') {
+                    quantityInput.value = currentValue + 1;
+                } else if (action === 'decrease' && currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                }
+                calculateTotal();
+            });
+        });
+
+        quantityInput.addEventListener('change', calculateTotal);
+        sizeSelect.addEventListener('change', calculateTotal);
+        colorSelect.addEventListener('change', calculateTotal);
+
+        paymentButton.addEventListener('click', function() {
+            if (files.length > 0 && calculateTotal() > 0) {
+                uploadSection.classList.add('processing-payment');
+                setTimeout(() => {
+                    alert('Payment Successful!\nPrinting your documents...');
+                    uploadSection.classList.remove('processing-payment', 'uploaded');
+                    // Reset UI
+                    files = [];
+                    filePreviewContainer.innerHTML = '';
+                    optionsContainer.style.display = 'none';
+                    paymentSection.style.display = 'none';
+                    printButton.style.display = 'none';
+                    fileInput.value = ''; // Clear selected files
+                    quantityInput.value = 1;
+                    calculateTotal();
+                }, 2000); // Simulate processing time
+            } else {
+                alert('Please upload files and ensure the total amount is greater than ₹0.00 before proceeding with payment.');
+            }
+        });
+
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            if (files.length === 0 || calculateTotal() <= 0) {
+                event.preventDefault();
+                alert('Please upload files and ensure the total amount is greater than ₹0.00 before printing.');
+            }
+            // In a real application, the form submission would send the files and
+            // printing options to the server for processing.
+        });
+    </script>
+</body>
+</html>

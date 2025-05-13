@@ -1,0 +1,345 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0; /* Softer background */
+    color: #444;
+    overflow-x: hidden; /* Prevent horizontal scroll during animations */
+}
+
+header {
+    background-color: #ff8f067e; /* Orange header */
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    height:20px;
+    align-items: center;
+    justify-content: flex-start; /* Logo to the left */
+}
+
+header .logo {
+    margin-right: 15px;
+}
+
+header .logo img {
+   height: 100px; /* Slightly smaller logo */
+   width:100%
+}
+
+main {
+    padding: 20px;
+}
+
+.upload-section {
+    background-color: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.upload-section.uploaded {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.upload-section.processing-payment {
+    opacity: 0.7;
+    transform: scale(0.95);
+}
+
+.upload-section h2 {
+    color: #1e90ff; /* Blue heading */
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.file-input-container {
+    margin-bottom: 20px;
+}
+
+.custom-file-upload {
+    border: 2px dashed #ccc;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    color: #777;
+    border-radius: 10px;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.custom-file-upload:hover {
+    background-color: #eee;
+    border-color: #aaa;
+}
+
+.upload-icon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 10px;
+    color: #1e90ff;
+}
+
+.custom-file-upload span {
+    font-size: 1.1em;
+}
+
+#file-upload {
+    display: none;
+}
+
+#file-preview-container {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.file-preview {
+    background-color: #e0f7fa; /* Light blue */
+    color: #00838f; /* Teal */
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.allowed-formats {
+    color: #888;
+    font-size: 0.9em;
+    margin-bottom: 15px;
+}
+
+#options-container {
+    margin-bottom: 25px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+#options-container h2 {
+    color: #1e90ff; /* Blue heading */
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: 600;
+    text-align: left;
+}
+
+.option {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.option label {
+    font-weight: 500;
+    color: #555;
+}
+
+.option .input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.option input[type="number"],
+.option select {
+    padding: 10px;
+    border: none;
+    flex-grow: 1;
+    font-size: 1em;
+}
+
+.quantity-btn {
+    background-color: #f0f0f0;
+    color: #555;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.quantity-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.payment-section {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.total-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-display span:first-child {
+    margin-right: 10px;
+    color: #555;
+}
+
+#total-amount {
+    color: #1e90ff;
+}
+
+#payment-button {
+    background-color: #1e90ff; /* Blue button */
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#payment-button:hover {
+    background-color: #0077cc;
+}
+
+.print-button {
+    background-color: #ff8c00; /* Orange button */
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.2s ease-in-out;
+    display: none; /* Initially hidden */
+}
+
+.print-button:hover {
+    background-color: #e67e00;
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    font-size: 0.9em;
+}
+
+/* Mobile Specific Styles */
+body {
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+}
+
+header {
+    justify-content: center; /* Center the logo */
+}
+
+main {
+    padding: 25px;
+}
+
+.upload-section {
+    border-radius: 16px; /* More rounded corners */
+}
+
+#options-container {
+    border-radius: 16px;
+}
+
+.payment-section {
+    border-radius: 16px;
+}
+/* Verified Tick Animation */
+.completion-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease-in-out;
+}
+
+.completion-animation.show {
+    display: flex;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.completion-animation svg {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+}
+
+.completion-animation svg path {
+    fill: none;
+    stroke: #4CAF50; /* Green color for tick */
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: draw-tick 1s ease-out forwards;
+}
+
+.completion-animation svg circle {
+    fill: none;
+    stroke: #4CAF50; /* Green color for circle */
+    stroke-width: 6;
+    opacity: 0;
+    animation: draw-circle-bg 1s ease-out 0.2s forwards;
+}
+
+.completion-animation p {
+    font-size: 1.2em;
+    color: #333;
+    font-weight: 500;
+}
+
+@keyframes draw-tick {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes draw-circle-bg {
+    to {
+        opacity: 1;
+    }
+}
